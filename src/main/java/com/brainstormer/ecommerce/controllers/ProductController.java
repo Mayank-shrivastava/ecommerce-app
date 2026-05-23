@@ -2,6 +2,7 @@ package com.brainstormer.ecommerce.controllers;
 
 import com.brainstormer.ecommerce.dtos.ProductRequestDto;
 import com.brainstormer.ecommerce.dtos.ProductResponseDto;
+import com.brainstormer.ecommerce.dtos.ProductResponseWithDetailsDto;
 import com.brainstormer.ecommerce.schema.Product;
 import com.brainstormer.ecommerce.services.ProductService;
 import lombok.AllArgsConstructor;
@@ -44,5 +45,10 @@ public class ProductController {
     @GetMapping("/categories")
     public List<String> getAllUniqueCategory() {
         return productService.getAllUniqueCategory();
+    }
+
+    @GetMapping("/{id}/details")
+    public List<ProductResponseWithDetailsDto> getProductDetails(@PathVariable Long id) {
+        return productService.getProductDetailsById(id);
     }
 }

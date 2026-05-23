@@ -1,22 +1,19 @@
 package com.brainstormer.ecommerce.schema;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.math.BigDecimal;
 
-@Data
+
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
 @Entity
 @Table(name = "products")
-public class Product {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY) // auto-increment
+public class Product extends BaseEntity {
     private Long id; // primary key
     @Column(nullable = false)
     private String title;
@@ -25,6 +22,9 @@ public class Product {
     @Column(nullable = false)
     private BigDecimal price;
     private String imageUrl;
-    private String category;
     private String rating;
+
+    @ManyToOne(fetch = FetchType.LAZY) // many products can belong to one category
+    @JoinColumn(name = "category_id", nullable = false)
+    private Category category;
 }

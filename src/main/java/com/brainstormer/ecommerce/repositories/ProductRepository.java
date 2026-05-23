@@ -14,4 +14,14 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
 
     @Query("SELECT DISTINCT p.category FROM Product p")
     List<String> findDistinctCategory();
+
+//    @Query(nativeQuery = true,
+//            value =
+//                    "SELECT p.*, c.name as category FROM products p INNER JOIN categories c on p.category_id = c.id where p.id=:id")
+//    List<Product> findProductWithDetailsById(Long id);
+
+    @Query("SELECT p FROM Product p JOIN FETCH p.category WHERE p.id = :id") // hibernate query language is being used
+    List<Product> findProductWithDetailsById(Long id);
+
+    // we can't write direct table name in case of hibernate query language we need write the relational object name
 }
