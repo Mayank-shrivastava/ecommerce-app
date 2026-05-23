@@ -7,7 +7,6 @@ import com.brainstormer.ecommerce.schema.Product;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.security.PublicKey;
 import java.util.List;
 
 @Service
@@ -79,5 +78,9 @@ public class ProductService {
                         .rating(product.getRating())
                         .build())
                 .toList();
+    }
+
+    public List<String> getAllUniqueCategory() {
+        return productRepository.findDistinctCategory();
     }
 }
