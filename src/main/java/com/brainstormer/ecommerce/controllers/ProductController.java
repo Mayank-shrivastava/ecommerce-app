@@ -41,7 +41,7 @@ public class ProductController {
         return productService.getProductByCategory(category);
     }
 
-    @GetMapping("/uniqueCategory")
+    @GetMapping("/categories")
     public List<String> getAllUniqueCategory() {
         return productService.getAllUniqueCategory();
     }
