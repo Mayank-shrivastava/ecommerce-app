@@ -3,8 +3,6 @@ package com.brainstormer.ecommerce.schema;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.List;
-
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
