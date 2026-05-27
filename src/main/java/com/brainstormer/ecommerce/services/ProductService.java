@@ -78,7 +78,7 @@ public class ProductService {
     }
 
     public List<ProductResponseDto> getProductByCategory(String category) {
-        return productRepository.findByCategory(category)
+        return productRepository.findByCategoryName(category)
                 .stream()
                 .map(product -> ProductResponseDto.builder()
                         .title(product.getTitle())
@@ -92,7 +92,10 @@ public class ProductService {
     }
 
     public List<String> getAllUniqueCategory() {
-        return productRepository.findDistinctCategory();
+        return productRepository.findDistinctCategory()
+                .stream()
+                .map(Category::getName)
+                .collect(Collectors.toList());
     }
 
     public List<ProductResponseWithDetailsDto> getProductDetailsById(Long id) {

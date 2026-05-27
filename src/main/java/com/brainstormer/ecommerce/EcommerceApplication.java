@@ -1,6 +1,5 @@
 package com.brainstormer.ecommerce;
 
-import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import io.github.cdimascio.dotenv.Dotenv;
@@ -9,7 +8,6 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 @SpringBootApplication
 @EnableJpaAuditing // automatically enable auditing in jpa
 public class EcommerceApplication {
-
 	public static void main(String[] args) {
 		// Setting up environment variables from .env file
 		Dotenv dotenv = Dotenv.configure().ignoreIfMissing().load();

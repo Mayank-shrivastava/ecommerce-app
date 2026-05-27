@@ -18,6 +18,7 @@ import java.util.List;
 @SQLDelete(sql = "UPDATE orders SET deleted_at = CURRENT_TIMESTAMP WHERE id = ?")
 @SQLRestriction("deleted_at IS NULL")
 public class Order extends BaseEntity {
+    @Column(name = "order_status")
     private OrderStatus orderStatus;
 
     // First approach for Many-to-many relationship

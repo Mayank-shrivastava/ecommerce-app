@@ -18,13 +18,13 @@ import java.math.BigDecimal;
 @SQLDelete(sql = "UPDATE products SET deleted_at = CURRENT_TIMESTAMP WHERE id = ?")
 @SQLRestriction("deleted_at IS NULL")
 public class Product extends BaseEntity {
-    private Long id; // primary key
     @Column(nullable = false)
     private String title;
     @Column(columnDefinition = "TEXT") // for longer descriptions
     private String description;
     @Column(nullable = false)
     private BigDecimal price;
+    @Column(name="image_url")
     private String imageUrl;
     private String rating;
 

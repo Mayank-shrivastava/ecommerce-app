@@ -3,7 +3,6 @@ package com.brainstormer.ecommerce.controllers;
 import com.brainstormer.ecommerce.dtos.ProductRequestDto;
 import com.brainstormer.ecommerce.dtos.ProductResponseDto;
 import com.brainstormer.ecommerce.dtos.ProductResponseWithDetailsDto;
-import com.brainstormer.ecommerce.schema.Product;
 import com.brainstormer.ecommerce.services.ProductService;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;

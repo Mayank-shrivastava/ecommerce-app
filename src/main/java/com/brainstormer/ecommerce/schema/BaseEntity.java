@@ -14,6 +14,7 @@ import java.time.LocalDateTime;
 @EntityListeners(AuditingEntityListener.class) // to enable auditing (createdAt, updatedAt)
 public class BaseEntity {
     @Id
+    @Column(nullable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY) // auto-increment
     private Long id;
 
