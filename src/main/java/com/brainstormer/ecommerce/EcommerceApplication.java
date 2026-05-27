@@ -1,5 +1,6 @@
 package com.brainstormer.ecommerce;
 
+import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import io.github.cdimascio.dotenv.Dotenv;
@@ -18,5 +19,4 @@ public class EcommerceApplication {
 
 		SpringApplication.run(EcommerceApplication.class, args);
 	}
-
 }

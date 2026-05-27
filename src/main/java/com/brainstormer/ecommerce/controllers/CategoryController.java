@@ -3,7 +3,6 @@ package com.brainstormer.ecommerce.controllers;
 
 import com.brainstormer.ecommerce.dtos.CategoryResponseDto;
 import com.brainstormer.ecommerce.dtos.CreateCategoryRequestDto;
-import com.brainstormer.ecommerce.schema.Category;
 import com.brainstormer.ecommerce.services.CategoryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
