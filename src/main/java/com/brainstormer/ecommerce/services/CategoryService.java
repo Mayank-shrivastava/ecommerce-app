@@ -2,6 +2,7 @@ package com.brainstormer.ecommerce.services;
 
 import com.brainstormer.ecommerce.dtos.CategoryResponseDto;
 import com.brainstormer.ecommerce.dtos.CreateCategoryRequestDto;
+import com.brainstormer.ecommerce.exceptions.ResourceNotFoundException;
 import com.brainstormer.ecommerce.repositories.CategoryRepository;
 import com.brainstormer.ecommerce.schema.Category;
 import lombok.RequiredArgsConstructor;
@@ -38,7 +39,7 @@ public class CategoryService {
                 .map(category -> CategoryResponseDto.builder()
                         .name(category.getName())
                         .build())
-                .orElseThrow(() -> new RuntimeException("Category not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Category with id " + id + "not found"));
     }
 
     public void deleteCategory(Long id) {

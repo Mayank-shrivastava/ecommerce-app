@@ -26,7 +26,7 @@ import lombok.Setter;
 @Table(name = "reviews")
 @SQLDelete(sql = "UPDATE reviews SET deleted_at = CURRENT_TIMESTAMP WHERE id = ?")
 @SQLRestriction("deleted_at IS NULL")
-public class Review extends BaseEntity{
+public class Review extends BaseEntity {
 
     @Column(columnDefinition = "TEXT") // for longer descriptions
     private String comment;
