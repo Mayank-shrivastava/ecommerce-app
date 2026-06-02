@@ -4,7 +4,10 @@ import com.brainstormer.ecommerce.dtos.ProductRequestDto;
 import com.brainstormer.ecommerce.dtos.ProductResponseDto;
 import com.brainstormer.ecommerce.dtos.ProductResponseWithDetailsDto;
 import com.brainstormer.ecommerce.services.ProductService;
+import com.brainstormer.ecommerce.utlis.ApiResponse;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -17,37 +20,52 @@ public class ProductController {
     private final ProductService productService;
 
     @GetMapping
-    public List<ProductResponseDto> getAllProducts() {
-        return productService.getAllProducts();
+    public ResponseEntity<ApiResponse<List<ProductResponseDto>>> getAllProducts() {
+        var products = productService.getAllProducts();
+        return ResponseEntity
+                .ok(ApiResponse.success(products, "Products fetched successfully"));
     }
 
     @GetMapping("{id}")
-    public ProductResponseDto getProductById(@PathVariable Long id) {
-        return productService.getProductById(id);
+    public ResponseEntity<ApiResponse<ProductResponseDto>> getProductById(@PathVariable Long id) {
+        var product = productService.getProductById(id);
+        return ResponseEntity
+                .ok(ApiResponse.success(product, "Product fetched successfully"));
     }
 
     @PostMapping
-    public ProductResponseDto createProduct(@RequestBody ProductRequestDto productRequestDto) {
-        return productService.createProduct(productRequestDto);
+    public ResponseEntity<ApiResponse<ProductResponseDto>> createProduct(@RequestBody ProductRequestDto productRequestDto) {
+        var product = productService.createProduct(productRequestDto);
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(ApiResponse.success(product, "Product created successfully"));
     }
 
     @DeleteMapping("{id}")
-    public void deleteProduct(@PathVariable Long id) {
+    public ResponseEntity<ApiResponse<Void>> deleteProduct(@PathVariable Long id) {
         productService.deleteProduct(id);
+        return ResponseEntity
+                .ok(ApiResponse.success(null, "Product deleted successfully"));
     }
 
     @GetMapping("/search")
-    public List<ProductResponseDto> getProductByCategory(@RequestParam("categoryName") String category) {
-        return productService.getProductByCategory(category);
+    public ResponseEntity<ApiResponse<List<ProductResponseDto>>> getProductByCategory(@RequestParam("categoryName") String category) {
+        var products = productService.getProductByCategory(category);
+        return ResponseEntity
+                .ok(ApiResponse.success(products, "Products fetched successfully"));
     }
 
     @GetMapping("/categories")
-    public List<String> getAllUniqueCategory() {
-        return productService.getAllUniqueCategory();
+    public ResponseEntity<ApiResponse<List<String>>> getAllUniqueCategory() {
+        var categories = productService.getAllUniqueCategory();
+        return ResponseEntity
+                .ok(ApiResponse.success(categories, "Categories fetched successfully"));
     }
 
     @GetMapping("/{id}/details")
-    public List<ProductResponseWithDetailsDto> getProductDetails(@PathVariable Long id) {
-        return productService.getProductDetailsById(id);
+    public ResponseEntity<ApiResponse<List<ProductResponseWithDetailsDto>>> getProductDetails(@PathVariable Long id) {
+        var productDetails = productService.getProductDetailsById(id);
+        return ResponseEntity
+                .ok(ApiResponse.success(productDetails, "Product details fetched successfully"));
     }
 }

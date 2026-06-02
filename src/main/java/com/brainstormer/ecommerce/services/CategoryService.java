@@ -43,6 +43,9 @@ public class CategoryService {
     }
 
     public void deleteCategory(Long id) {
+        if (!categoryRepository.existsById(id)) {
+            throw new ResourceNotFoundException("Category with id " + id + " not found");
+        }
         categoryRepository.deleteById(id);
     }
 }

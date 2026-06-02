@@ -4,6 +4,7 @@ import com.brainstormer.ecommerce.dtos.CategoryResponseDto;
 import com.brainstormer.ecommerce.dtos.ProductRequestDto;
 import com.brainstormer.ecommerce.dtos.ProductResponseDto;
 import com.brainstormer.ecommerce.dtos.ProductResponseWithDetailsDto;
+import com.brainstormer.ecommerce.exceptions.ResourceNotFoundException;
 import com.brainstormer.ecommerce.repositories.ProductRepository;
 import com.brainstormer.ecommerce.schema.Category;
 import com.brainstormer.ecommerce.schema.Product;
@@ -44,7 +45,7 @@ public class ProductService {
 //                        .category(product.getCategory().getName())
                         .rating(product.getRating())
                         .build())
-                .orElseThrow(() -> new RuntimeException("Product not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Product with id " + id + " not found"));
     }
 
     public ProductResponseDto createProduct(ProductRequestDto productRequestDto) {
@@ -74,6 +75,9 @@ public class ProductService {
     }
 
     public void deleteProduct(Long id) {
+        if (!productRepository.existsById(id)) {
+            throw new ResourceNotFoundException("Product with id " + id + " not found");
+        }
         productRepository.deleteById(id);
     }
 
