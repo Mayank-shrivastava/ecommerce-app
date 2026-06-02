@@ -4,6 +4,7 @@ package com.brainstormer.ecommerce.controllers;
 import com.brainstormer.ecommerce.dtos.CategoryResponseDto;
 import com.brainstormer.ecommerce.dtos.CreateCategoryRequestDto;
 import com.brainstormer.ecommerce.services.CategoryService;
+import com.brainstormer.ecommerce.utlis.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,12 +20,13 @@ public class CategoryController {
     private final CategoryService categoryService;
 
     @PostMapping
-    public ResponseEntity<CategoryResponseDto> createCategory(@RequestBody CreateCategoryRequestDto requestDto) {
+    public ResponseEntity<ApiResponse<CategoryResponseDto>> createCategory(@RequestBody CreateCategoryRequestDto requestDto) {
 
         //return new ResponseEntity<>(categoryService.createCategory(requestDto), HttpStatus.CREATED);
+        var category = categoryService.createCategory(requestDto);
         return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .body(categoryService.createCategory(requestDto));
+                .body(ApiResponse.success(category, "Category created successfully"));
     }
 
     @GetMapping
