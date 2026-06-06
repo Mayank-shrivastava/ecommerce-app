@@ -14,7 +14,6 @@ public class ApiResponse<T> {
     private String error;
     private T data;
 
-
     public static <T> ApiResponse<T> success(T data, String message) {
         return ApiResponse.<T>builder()
                 .success(true)

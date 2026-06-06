@@ -59,21 +59,6 @@ public class OrderService {
 
         orderRepository.save(order);
 
-//        if (orderRequestDto.getOrderItems() != null) {
-//            for (var itemDto : orderRequestDto.getOrderItems()) {
-//                Product product = productRepository.findById(itemDto.getProductId())
-//                        .orElseThrow(() -> new ResourceNotFoundException("Product not found with id: " + itemDto.getProductId()));
-//
-//                OrderProductMapping orderProductMapping = OrderProductMapping.builder()
-//                        .order(order)
-//                        .product(product)
-//                        .quantity(itemDto.getQuantity() != null ? item.getQuantity() : 1)
-//                        .build();
-//
-//                orderProductRepository.save(orderProductMapping);
-//            }
-//        }
-
         if (orderRequestDto.getOrderItems() != null) {
             List<Long> productIds = orderRequestDto.getOrderItems().stream()
                     .map(item -> item.getProductId())

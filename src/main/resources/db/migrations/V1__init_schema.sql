@@ -13,7 +13,7 @@ CREATE TABLE IF NOT EXISTS products (
     description TEXT,
     price DECIMAL(38, 2) NOT NULL,
     image_url VARCHAR(255),
-    rating VARCHAR(255),
+    rating DECIMAL(3, 1),
     category_id BIGINT NOT NULL,
     created_at DATETIME(6) NOT NULL,
     updated_at DATETIME(6),

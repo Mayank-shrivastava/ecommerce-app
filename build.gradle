@@ -38,3 +38,23 @@ dependencies {
 tasks.named('test') {
 	useJUnitPlatform()
 }
+
+tasks.named("bootRun") {
+	jvmArgs = ['-javaagent:newrelic/newrelic.jar']
+
+	// Load .env and expose it to the JVM as real environment variables.
+	// The New Relic agent reads NEW_RELIC_* env vars at startup (premain), which
+	// happens before main() runs - so dotenv-java loaded inside main() is too late
+	// for the agent. Injecting here makes .env the single source of truth for both
+	// Spring and New Relic.
+	def envFile = file('.env')
+	if (envFile.exists()) {
+		envFile.readLines().each { line ->
+			line = line.trim()
+			if (line && !line.startsWith('#') && line.contains('=')) {
+				int idx = line.indexOf('=')
+				environment line.substring(0, idx).trim(), line.substring(idx + 1).trim()
+			}
+		}
+	}
+}
