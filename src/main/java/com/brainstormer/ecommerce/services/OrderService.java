@@ -13,6 +13,8 @@ import com.brainstormer.ecommerce.schema.enums.OrderStatus;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -190,9 +192,32 @@ public class OrderService {
         return orderAdapter.mapToOrderResponseDto(order);
     }
 
+    public OrderSummaryResponseDto getOrderSummary(Long id) {
+        Order order = orderRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Order not found for id: " + id));
+
+        List<OrderProductMapping> orderProducts = orderProductRepository.findByOrderWithProduct(order);
+
+        List<OrderItemResponseDto> items = orderAdapter.mapToOrderItemResponseDto(orderProducts);
+
+        int totalItems = orderProducts.stream().mapToInt(OrderProductMapping::getQuantity).sum();
+
+        BigDecimal totalPrice = orderProducts.stream().map(op -> op.getProduct().getPrice().multiply(BigDecimal.valueOf(op.getQuantity())))
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+        return OrderSummaryResponseDto.builder()
+                    .id(order.getId())
+                    .status(order.getOrderStatus())
+                    .items(items)
+                    .totalPrice(totalPrice)
+                    .totalItems(totalItems)
+                    .createdAt(order.getCreatedAt())
+                    .updatedAt(order.getUpdatedAt())
+                    .build();
+
+    }
 }
 
-// User -> Cart -> Adds an item -> New Order (Pending)
+// User -> Cart -> Adds an item -> New Order (Pending)]
 
 // User -> adds more items in the cart -> Same order will be updated
 

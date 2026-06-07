@@ -1,7 +1,8 @@
 package com.brainstormer.ecommerce.controllers;
-
+import com.brainstormer.ecommerce.dtos.OrderRequestDto;
 import com.brainstormer.ecommerce.dtos.OrderResponseDto;
-import com.brainstormer.ecommerce.schema.Order;
+import com.brainstormer.ecommerce.dtos.OrderSummaryResponseDto;
+import com.brainstormer.ecommerce.dtos.UpdateOrderRequestDto;
 import com.brainstormer.ecommerce.services.OrderService;
 import com.brainstormer.ecommerce.utlis.ApiResponse;
 import lombok.RequiredArgsConstructor;
@@ -29,8 +30,10 @@ public class OrderController {
     }
 
     @PostMapping
-    public Order createOrder() {
-        throw new UnsupportedOperationException("Not implemented");
+    public ResponseEntity<ApiResponse<OrderResponseDto>> createOrder(@RequestBody OrderRequestDto orderRequestDto) {
+        OrderResponseDto orderResponseDto = orderService.createOrder(orderRequestDto);
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(ApiResponse.success(orderResponseDto, "Order Created Successfully."));
     }
 
     @DeleteMapping("/{id}")
@@ -47,18 +50,15 @@ public class OrderController {
                 .body(ApiResponse.success(orderResponseDto, "Order fetched successfully"));
     }
 
-    @GetMapping("/user/{userId}")
-    public List<Order> getOrdersByUserId(@PathVariable Long userId) {
-        throw new UnsupportedOperationException("Not implemented");
-    }
-
     @PutMapping("/{id}")
-    public Order updateOrder(@PathVariable Long id) {
-        throw new UnsupportedOperationException("Not implemented");
+    public ResponseEntity<ApiResponse<OrderResponseDto>> updateOrder(@PathVariable Long id, @RequestBody UpdateOrderRequestDto updateOrderRequestDto) {
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(ApiResponse.success(orderService.updateOrder(id, updateOrderRequestDto), "Order updated successfully"));
     }
 
     @GetMapping("/{id}/summary")
-    public void getOrderSummary(@PathVariable Long id) {
-        throw new UnsupportedOperationException("Not implemented");
+    public ResponseEntity<ApiResponse<OrderSummaryResponseDto>> getOrderSummary(@PathVariable Long id) {
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(ApiResponse.success(orderService.getOrderSummary(id), "Order summary fetched successfully"));
     }
 }
