@@ -17,8 +17,9 @@ import com.brainstormer.ecommerce.schema.Product;
 import com.brainstormer.ecommerce.schema.Review;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
-
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class ReviewService {
@@ -37,7 +38,10 @@ public class ReviewService {
 
     public GetReviewResponseDto getReviewById(Long id) {
         Review review = reviewRepository.findById(id)
-            .orElseThrow(() -> new ResourceNotFoundException("Review not found with id: " + id));
+            .orElseThrow(() ->  {
+                log.error("Review not found with id: {}", id);
+                return new ResourceNotFoundException("Review not found with id: " + id);
+            });
         return reviewAdapter.mapToGetReviewResponseDto(review);
     }
 
@@ -57,10 +61,16 @@ public class ReviewService {
 
     public GetReviewResponseDto createReview(ReviewRequestDto reviewRequestDto) {
         Product product = productRepository.findById(reviewRequestDto.getProductId())
-            .orElseThrow(() -> new ResourceNotFoundException("Product not found with id: " + reviewRequestDto.getProductId()));
+            .orElseThrow(() -> {
+                log.error("Product not found with id: {}", reviewRequestDto.getProductId());
+                return new ResourceNotFoundException("Product not found with id: " + reviewRequestDto.getProductId());
+            });
 
         Order order = orderRepository.findById(reviewRequestDto.getOrderId())
-            .orElseThrow(() -> new ResourceNotFoundException("Order not found with id: " + reviewRequestDto.getOrderId()));
+            .orElseThrow(() -> {
+                log.error("Order not found with id: {}", reviewRequestDto.getOrderId());
+                return new ResourceNotFoundException("Order not found with id: " + reviewRequestDto.getOrderId());
+            });
 
         Review review = Review.builder()
             .product(product)
@@ -74,6 +84,7 @@ public class ReviewService {
 
     public void deleteReview(Long id) {
         if (!reviewRepository.existsById(id)) {
+            log.error("Review not found with id: {}", id);
             throw new ResourceNotFoundException("Review not found with id: " + id);
         }
         reviewRepository.deleteById(id);

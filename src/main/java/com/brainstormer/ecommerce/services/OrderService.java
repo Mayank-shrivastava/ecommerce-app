@@ -12,6 +12,7 @@ import com.brainstormer.ecommerce.schema.Product;
 import com.brainstormer.ecommerce.schema.enums.OrderStatus;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -21,6 +22,7 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class OrderService {
@@ -37,13 +39,17 @@ public class OrderService {
 
     public OrderResponseDto getOrderById(Long id) {
         Order order = orderRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Order not found with id: " + id));
+                .orElseThrow(() -> {
+                    log.error("Order not found with id: {}", id);
+                    return new ResourceNotFoundException("Order not found with id: " + id);
+                });
 
         return orderAdapter.mapToOrderResponseDto(order);
     }
 
     public void deleteOrder(Long id) {
         if (!orderRepository.existsById(id)) {
+            log.error("Order not found with id: {}", id);
             throw new ResourceNotFoundException("Order not found with id: " + id);
         }
         orderRepository.deleteById(id);
@@ -72,6 +78,7 @@ public class OrderService {
 
             for (Long id : productIds) {
                 if (!productMap.containsKey(id)) {
+                    log.error("Product not found with id: {}", id);
                     throw new ResourceNotFoundException("Product not found with id: " + id);
                 }
             }
@@ -98,7 +105,10 @@ public class OrderService {
     public OrderResponseDto updateOrder(Long orderId, UpdateOrderRequestDto updateOrderRequestDto) {
         // Fetch old order
         Order order = orderRepository.findById(orderId)
-                .orElseThrow(() -> new ResourceNotFoundException("Order not found with id: " + orderId));
+                .orElseThrow(() -> {
+                    log.error("Order not found with id: {}", orderId);
+                    return new ResourceNotFoundException("Order not found with id: " + orderId);
+                });
 
         // update the order status if not null
         if (updateOrderRequestDto.getStatus() != null) {
@@ -120,6 +130,7 @@ public class OrderService {
 
             for (var pdId : productIds) {
                 if (!productMap.containsKey(pdId)) {
+                    log.error("Product not found with id: {}", pdId);
                     throw new ResourceNotFoundException("Product not found with id: " + pdId);
                 }
             }
@@ -153,6 +164,7 @@ public class OrderService {
 
                     case OrderItemAction.REMOVE -> {
                         if (existing == null) {
+                            log.error("Product not found with id: {}", product.getId());
                             throw new ResourceNotFoundException("Product not found with id: "+ product.getId());
                         }
                         toDelete.add(existing);
@@ -160,6 +172,7 @@ public class OrderService {
                     }
                     case OrderItemAction.INCREMENT -> {
                         if (existing == null) {
+                            log.error("Product not found with id: {}", product.getId());
                             throw new ResourceNotFoundException("Product not found with id: "+ product.getId());
                         }
                         existing.setQuantity(existing.getQuantity() + 1);
@@ -167,6 +180,7 @@ public class OrderService {
                     }
                     case OrderItemAction.DECREMENT -> {
                         if (existing == null) {
+                            log.error("Product not found with id: {}", product.getId());
                             throw new ResourceNotFoundException("Product not found with id: "+ product.getId());
                         }
 
@@ -193,7 +207,11 @@ public class OrderService {
     }
 
     public OrderSummaryResponseDto getOrderSummary(Long id) {
-        Order order = orderRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Order not found for id: " + id));
+        Order order = orderRepository.findById(id)
+                .orElseThrow(() -> {
+                    log.error("Order not found with id: {}", id);
+                    return new ResourceNotFoundException("Order not found for id: " + id);
+                });
 
         List<OrderProductMapping> orderProducts = orderProductRepository.findByOrderWithProduct(order);
 

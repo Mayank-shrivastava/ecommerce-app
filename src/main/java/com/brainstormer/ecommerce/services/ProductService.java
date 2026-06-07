@@ -9,11 +9,13 @@ import com.brainstormer.ecommerce.repositories.ProductRepository;
 import com.brainstormer.ecommerce.schema.Category;
 import com.brainstormer.ecommerce.schema.Product;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class ProductService {
@@ -45,7 +47,10 @@ public class ProductService {
 //                        .category(product.getCategory().getName())
                         .rating(product.getRating())
                         .build())
-                .orElseThrow(() -> new ResourceNotFoundException("Product with id " + id + " not found"));
+                .orElseThrow(() -> {
+                    log.error("Product not found with id: {}", id);
+                    return new ResourceNotFoundException("Product with id " + id + " not found");
+                });
     }
 
     public ProductResponseDto createProduct(ProductRequestDto productRequestDto) {
@@ -76,6 +81,7 @@ public class ProductService {
 
     public void deleteProduct(Long id) {
         if (!productRepository.existsById(id)) {
+            log.error("Product not found with id: {}", id);
             throw new ResourceNotFoundException("Product with id " + id + " not found");
         }
         productRepository.deleteById(id);

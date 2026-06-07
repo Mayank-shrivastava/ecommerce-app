@@ -6,10 +6,12 @@ import com.brainstormer.ecommerce.exceptions.ResourceNotFoundException;
 import com.brainstormer.ecommerce.repositories.CategoryRepository;
 import com.brainstormer.ecommerce.schema.Category;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class CategoryService {
@@ -39,11 +41,15 @@ public class CategoryService {
                 .map(category -> CategoryResponseDto.builder()
                         .name(category.getName())
                         .build())
-                .orElseThrow(() -> new ResourceNotFoundException("Category with id " + id + "not found"));
+                .orElseThrow(() -> {
+                    log.error("Category not found with id: {}", id);
+                    return new ResourceNotFoundException("Category with id " + id + " not found");
+                });
     }
 
     public void deleteCategory(Long id) {
         if (!categoryRepository.existsById(id)) {
+            log.error("Category not found with id: {}", id);
             throw new ResourceNotFoundException("Category with id " + id + " not found");
         }
         categoryRepository.deleteById(id);
