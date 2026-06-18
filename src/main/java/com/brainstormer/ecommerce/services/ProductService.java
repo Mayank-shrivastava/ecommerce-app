@@ -19,8 +19,8 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class ProductService {
-    private final ProductRepository productRepository;
 
+    private final ProductRepository productRepository;
     private final CategoryService categoryService;
 
     public List<ProductResponseDto> getAllProducts() {

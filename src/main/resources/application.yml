@@ -14,3 +14,7 @@ spring:
   flyway:
     enabled: true
     locations: classpath:db/migrations
+
+  redis:
+    host: localhost
+    port: 6379
