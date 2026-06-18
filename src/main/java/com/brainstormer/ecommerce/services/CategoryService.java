@@ -47,6 +47,14 @@ public class CategoryService {
                 });
     }
 
+    public Category getCategoryEntityById(Long id) {
+        return categoryRepository.findById(id)
+                .orElseThrow(() -> {
+                    log.error("Category not found with id: {}", id);
+                    return new ResourceNotFoundException("Category with id " + id + " not found");
+                });
+    }
+
     public void deleteCategory(Long id) {
         if (!categoryRepository.existsById(id)) {
             log.error("Category not found with id: {}", id);

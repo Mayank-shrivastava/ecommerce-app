@@ -1,6 +1,5 @@
 package com.brainstormer.ecommerce.services;
 
-import com.brainstormer.ecommerce.dtos.CategoryResponseDto;
 import com.brainstormer.ecommerce.dtos.ProductRequestDto;
 import com.brainstormer.ecommerce.dtos.ProductResponseDto;
 import com.brainstormer.ecommerce.dtos.ProductResponseWithDetailsDto;
@@ -8,11 +7,13 @@ import com.brainstormer.ecommerce.exceptions.ResourceNotFoundException;
 import com.brainstormer.ecommerce.repositories.ProductRepository;
 import com.brainstormer.ecommerce.schema.Category;
 import com.brainstormer.ecommerce.schema.Product;
+import com.brainstormer.ecommerce.services.cache.ProductRedisCache;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
 
+import org.springframework.stereotype.Service;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -22,6 +23,7 @@ public class ProductService {
 
     private final ProductRepository productRepository;
     private final CategoryService categoryService;
+    private final ProductRedisCache productRedisCacheService;
 
     public List<ProductResponseDto> getAllProducts() {
         var products = productRepository.findAll();
@@ -38,7 +40,11 @@ public class ProductService {
     }
 
     public ProductResponseDto getProductById(Long id) {
-        return productRepository.findById(id)
+        Optional<ProductResponseDto> cacheProductResponse = productRedisCacheService.getSummary(id);
+        if (cacheProductResponse.isPresent()) {
+                return cacheProductResponse.get();
+        }
+        ProductResponseDto response = productRepository.findById(id)
                 .map(product -> ProductResponseDto.builder()
                         .title(product.getTitle())
                         .description(product.getDescription())
@@ -51,13 +57,13 @@ public class ProductService {
                     log.error("Product not found with id: {}", id);
                     return new ResourceNotFoundException("Product with id " + id + " not found");
                 });
+        // add to avoid cache miss next time
+        productRedisCacheService.putSummary(id, response);
+        return response;
     }
 
     public ProductResponseDto createProduct(ProductRequestDto productRequestDto) {
-        CategoryResponseDto categoryResponseDto = categoryService.getCategoryById(productRequestDto.getCategoryId());
-        Category category = Category.builder()
-                .name(categoryResponseDto.getName())
-                .build();
+        Category category = categoryService.getCategoryEntityById(productRequestDto.getCategoryId());
 
         Product newProduct = Product.builder()
                 .title(productRequestDto.getTitle())
